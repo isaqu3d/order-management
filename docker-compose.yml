@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: order-management-db
+    ports:
+      - '27017:27017'
+    volumes:
+      - mongodb_data:/data/db
+
+  app:
+    build: .
+    container_name: order-management-app
+    environment:
+      NODE_ENV: production
+      MONGODB_URI: mongodb://mongodb:27017/order-management
+      PORT: 3000
+      JWT_SECRET: your-super-secret-jwt-key-change-this
+      JWT_EXPIRES_IN: 7d
+      API_PREFIX: /api
+    ports:
+      - '3000:3000'
+    depends_on:
+      - mongodb
+
+volumes:
+  mongodb_data:
