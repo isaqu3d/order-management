@@ -13,12 +13,12 @@ services:
     build: .
     container_name: order-management-app
     environment:
-      NODE_ENV: production
-      MONGODB_URI: mongodb://mongodb:27017/order-management
-      PORT: 3000
-      JWT_SECRET: your-super-secret-jwt-key-change-this
-      JWT_EXPIRES_IN: 7d
-      API_PREFIX: /api
+      NODE_ENV: ${NODE_ENV:-development}
+      MONGODB_URI: ${MONGODB_URI}
+      PORT: ${PORT:-3000}
+      JWT_SECRET: ${JWT_SECRET}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-7d}
+      API_PREFIX: ${API_PREFIX:-/api}
     ports:
       - '3000:3000'
     depends_on:
