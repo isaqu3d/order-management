@@ -2,6 +2,7 @@ import cors from 'cors';
 import express, { Express } from 'express';
 import { connectDatabase } from './configs/database';
 import { env } from './configs/env';
+import { errorMiddleware } from './middlewares/error.middleware';
 import routes from './routes';
 
 const app: Express = express();
@@ -11,6 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(env.apiPrefix, routes);
+app.use(errorMiddleware);
 
 const startServer = async () => {
   try {
