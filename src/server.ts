@@ -1,12 +1,30 @@
-import express, { Express } from "express";
+import cors from 'cors';
+import express, { Express } from 'express';
+import { connectDatabase } from './configs/database';
+import { env } from './configs/env';
+import routes from './routes';
 
 const app: Express = express();
-const PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+app.use(env.apiPrefix, routes);
+
+const startServer = async () => {
+  try {
+    await connectDatabase();
+
+    app.listen(env.port, () => {
+      console.log(`🚀 Server running on port ${env.port}`);
+      console.log(`📝 Environment: ${env.nodeEnv}`);
+      console.log(`🔗 API: http://localhost:${env.port}${env.apiPrefix}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+startServer();
