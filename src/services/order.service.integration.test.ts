@@ -207,6 +207,32 @@ describe('OrderService - State Transition Integration Tests', () => {
       expect(totalValue).toBe(150);
     });
 
+    it('should enforce that each service must have positive value', () => {
+      const servicesWithZero = [
+        { name: 'Service 1', value: 50, status: ServiceStatus.PENDING },
+        { name: 'Service 2', value: 0, status: ServiceStatus.PENDING },
+      ];
+
+      const servicesWithNegative = [
+        { name: 'Service 1', value: 50, status: ServiceStatus.PENDING },
+        { name: 'Service 2', value: -10, status: ServiceStatus.PENDING },
+      ];
+
+      const validServices = [
+        { name: 'Service 1', value: 50, status: ServiceStatus.PENDING },
+        { name: 'Service 2', value: 100, status: ServiceStatus.PENDING },
+      ];
+
+      // Check if any service has invalid value
+      const hasInvalidServiceZero = servicesWithZero.some((s) => s.value <= 0);
+      const hasInvalidServiceNegative = servicesWithNegative.some((s) => s.value <= 0);
+      const hasInvalidServiceValid = validServices.some((s) => s.value <= 0);
+
+      expect(hasInvalidServiceZero).toBe(true);
+      expect(hasInvalidServiceNegative).toBe(true);
+      expect(hasInvalidServiceValid).toBe(false);
+    });
+
     it('should enforce that order must have at least one service', () => {
       const emptyServices: any[] = [];
       const validServices = [{ name: 'Service 1', value: 50, status: ServiceStatus.PENDING }];

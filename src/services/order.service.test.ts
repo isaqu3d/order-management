@@ -181,7 +181,7 @@ describe('OrderService - State Transitions', () => {
       );
     });
 
-    it('should throw error when total value is zero or negative', async () => {
+    it('should throw error when a service has zero value', async () => {
       const orderData = {
         lab: 'Lab ABC',
         patient: 'John Doe',
@@ -196,7 +196,55 @@ describe('OrderService - State Transitions', () => {
       };
 
       await expect(orderService.createOrder(orderData)).rejects.toThrow(
-        'Order total value must be greater than zero',
+        'Service "Hemograma" must have a value greater than zero',
+      );
+    });
+
+    it('should throw error when a service has negative value', async () => {
+      const orderData = {
+        lab: 'Lab ABC',
+        patient: 'John Doe',
+        customer: 'Hospital XYZ',
+        services: [
+          {
+            name: 'Raio-X',
+            value: -50,
+            status: ServiceStatus.PENDING,
+          },
+        ],
+      };
+
+      await expect(orderService.createOrder(orderData)).rejects.toThrow(
+        'Service "Raio-X" must have a value greater than zero',
+      );
+    });
+
+    it('should throw error when one service in multiple has zero value', async () => {
+      const orderData = {
+        lab: 'Lab ABC',
+        patient: 'John Doe',
+        customer: 'Hospital XYZ',
+        services: [
+          {
+            name: 'Hemograma',
+            value: 100,
+            status: ServiceStatus.PENDING,
+          },
+          {
+            name: 'Exame de Urina',
+            value: 0,
+            status: ServiceStatus.PENDING,
+          },
+          {
+            name: 'Raio-X',
+            value: 150,
+            status: ServiceStatus.PENDING,
+          },
+        ],
+      };
+
+      await expect(orderService.createOrder(orderData)).rejects.toThrow(
+        'Service "Exame de Urina" must have a value greater than zero',
       );
     });
   });

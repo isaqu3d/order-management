@@ -7,6 +7,11 @@ export class OrderService {
       throw new Error('Order must have at least one service');
     }
 
+    const invalidService = data.services.find(service => service.value <= 0);
+    if (invalidService) {
+      throw new Error(`Service "${invalidService.name}" must have a value greater than zero`);
+    }
+
     const totalValue = data.services.reduce((sum, service) => sum + service.value, 0);
     if (totalValue <= 0) {
       throw new Error('Order total value must be greater than zero');
